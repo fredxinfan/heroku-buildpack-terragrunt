@@ -34,32 +34,27 @@ BP_DIR=`cd $(dirname $0); cd ..; pwd`
 terraform_bin="$BUILD_DIR/bin/terraform"
 terragrunt_bin="$BUILD_DIR/bin/terragrunt"
 
-if [ ! -s $1/.terraform_url ]; then
-  echo "File .terraform_url is empty, skipping..." | indent
+if [ ! -s $BUILD_DIR/.terraform_url || ! -s $BUILD_DIR/.terragrunt_url ]; then
+  echo "File .terraform_url or .terragrunt_url is empty, skipping..." | indent
   exit 0
-else
-  while read url; do
-    if [ -n "$url" ]; then
-      topic "Installing Terraform from ${url}"
-      curl -s -L $url > $BUILD_DIR/bin/terraform.zip
-      cd $BUILD_DIR/bin && unzip terraform.zip && rm terraform.zip
-      chmod +x "$terraform_bin"
-    fi
-  done < .terraform_url
 fi
 
-if [ ! -s $1/.terragrunt_url ]; then
-  echo "File .terragrunt_url is empty, skipping..." | indent
-  exit 0
-else
-  while read url; do
-    if [ -n "$url" ]; then
-      topic "Installing Terragrunt from ${url}"
-      curl -s -L $url > $BUILD_DIR/bin/terragrunt
-      chmod +x "$terragrunt_bin"
-    fi
-  done < .terragrunt_url
-fi
+while read url; do
+  if [ -n "$url" ]; then
+    topic "Installing Terraform from ${url}"
+    curl -s -L $url > $BUILD_DIR/bin/terraform.zip
+    cd $BUILD_DIR/bin && unzip terraform.zip && rm terraform.zip
+    chmod +x "$terraform_bin"
+  fi
+done < $BUILD_DIR/.terraform_url
+
+while read url; do
+  if [ -n "$url" ]; then
+    topic "Installing Terragrunt from ${url}"
+    curl -s -L $url > $BUILD_DIR/bin/terragrunt
+    chmod +x "$terragrunt_bin"
+  fi
+done < $BUILD_DIR/.terragrunt_url
 
 topic 'Setting up $PATH'
 mkdir -p "$BUILD_DIR/.profile.d"
