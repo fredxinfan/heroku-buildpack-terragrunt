@@ -34,7 +34,7 @@ BP_DIR=`cd $(dirname $0); cd ..; pwd`
 terraform_bin="$BUILD_DIR/bin/terraform"
 terragrunt_bin="$BUILD_DIR/bin/terragrunt"
 
-if [ ! -s $BUILD_DIR/.terraform_url || ! -s $BUILD_DIR/.terragrunt_url ]; then
+if [ ! -s $BUILD_DIR/.terraform_url ] || [ ! -s $BUILD_DIR/.terragrunt_url ]; then
   echo "File .terraform_url or .terragrunt_url is empty, skipping..." | indent
   exit 0
 fi
