@@ -1,6 +1,14 @@
 #!/bin/bash
-if [ -d $1/config/terraform ]; then
-    echo "Found Terraform config"
+
+if [ -f $1/.terraform_url ]; then
+    echo "Found .terraform_url"
+    exit 0
+else
+    exit 1
+fi
+
+if [ -f $1/.terragrunt_url ]; then
+    echo "Found .terragrunt_url"
     exit 0
 else
     exit 1

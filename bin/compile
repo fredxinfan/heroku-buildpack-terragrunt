@@ -27,19 +27,40 @@ function indent() {
   esac
 }
 
-topic "Installing Linuxbrew..."
+BUILD_DIR=$1
+CACHE_DIR=$2
+BP_DIR=`cd $(dirname $0); cd ..; pwd`
 
-sh -c "$(curl -fsSL https://raw.githubusercontent.com/Linuxbrew/install/master/install.sh)"
+terraform_bin="$BUILD_DIR/bin/terraform"
+terragrunt_bin="$BUILD_DIR/bin/terragrunt"
 
-test -d ~/.linuxbrew && eval $(~/.linuxbrew/bin/brew shellenv)
-test -d /home/linuxbrew/.linuxbrew && eval $(/home/linuxbrew/.linuxbrew/bin/brew shellenv)
-test -r ~/.bash_profile && echo "eval \$($(brew --prefix)/bin/brew shellenv)" >>~/.bash_profile
-echo "eval \$($(brew --prefix)/bin/brew shellenv)" >>~/.profile
+if [ ! -s $1/.terraform_url ]; then
+  echo "File .terraform_url is empty, skipping..." | indent
+  exit 0
+else
+  while read url; do
+    if [ -n "$url" ]; then
+      topic "Installing Terraform from ${url}"
+      curl -s -L $url > $BUILD_DIR/bin/terraform.zip
+      cd $BUILD_DIR/bin && unzip terraform.zip && rm terraform.zip
+      chmod +x "$terraform_bin"
+    fi
+  done < .terraform_url
+fi
 
-topic "Linuxbrew installed"
+if [ ! -s $1/.terragrunt_url ]; then
+  echo "File .terragrunt_url is empty, skipping..." | indent
+  exit 0
+else
+  while read url; do
+    if [ -n "$url" ]; then
+      topic "Installing Terragrunt from ${url}"
+      curl -s -L $url > $BUILD_DIR/bin/terragrunt
+      chmod +x "$terragrunt_bin"
+    fi
+  done < .terragrunt_url
+fi
 
-topic "Installing Terragrunt..."
-
-brew install terragrunt
-
-topic "Terragrunt installed"
+topic 'Setting up $PATH'
+mkdir -p "$BUILD_DIR/.profile.d"
+cp $BP_DIR/.profile.d/* $BUILD_DIR/.profile.d/
