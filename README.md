@@ -1,2 +1,2 @@
 # heroku-buildpack-terragrunt
-Install Terragrunt on Heroku dynos
+Install Terragrunt on Heroku dynos with Linuxbrew

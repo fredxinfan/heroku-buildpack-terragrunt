@@ -1,0 +1,7 @@
+#!/bin/bash
+if [ -d $1/config/terraform ]; then
+    echo "Found Terraform config"
+    exit 0
+else
+    exit 1
+fi
