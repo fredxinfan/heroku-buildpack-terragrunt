@@ -35,10 +35,7 @@ BP_DIR=`cd $(dirname $0); cd ..; pwd`
 if [ -d "$ENV_DIR" ]; then
   topic "Exporting environment variables"
   for e in $(ls $ENV_DIR); do
-    if [[ $e == IMAGE_CLOUDFRONT_HOST_* ]]
-      then
-      echo "$e: $(cat $ENV_DIR/$e)" | indent
-    fi
+    echo "$e: $(cat $ENV_DIR/$e)" | indent
   done
 fi
 
