@@ -29,7 +29,18 @@ function indent() {
 
 BUILD_DIR=$1
 CACHE_DIR=$2
+ENV_DIR=$3
 BP_DIR=`cd $(dirname $0); cd ..; pwd`
+
+if [ -d "$ENV_DIR" ]; then
+  topic "Exporting environment variables"
+  for e in $(ls $ENV_DIR); do
+    if [[ $e == IMAGE_CLOUDFRONT_HOST_* ]]
+      then
+      echo "$e: $(cat $ENV_DIR/$e)" | indent
+    fi
+  done
+fi
 
 terraform_bin="$BUILD_DIR/bin/terraform"
 terragrunt_bin="$BUILD_DIR/bin/terragrunt"
